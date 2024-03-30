@@ -1,0 +1,29 @@
+.post-textarea {
+    resize: none;
+    width: 100%;
+    padding: 12px;
+    font-family: inherit;
+    border: 1px solid rgb(211, 211, 211);
+    background-color: rgb(240, 240, 240);
+    transition: all 0.5s;
+}
+
+
+.post-form-container {
+    width: 100%;
+}
+
+
+.post-textarea:focus {
+    border: 1px solid lightgray;
+    outline: none;
+}
+
+
+.post-form-actions {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}

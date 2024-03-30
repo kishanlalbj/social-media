@@ -1,0 +1,52 @@
+.profile-avatar-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.profile-avatar {
+    width: 50%;
+    border-radius: 100%;
+}
+
+.profile-details-container {
+    margin-top: 16px;
+    text-align: center;
+    flex-wrap: wrap;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+}
+
+.profile-details-container  div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile-content-text {
+    font-size: 14px;
+}
+
+
+.profile-title-text {
+    color: gray;
+    font: 24px;
+}
+
+
+.profile-bio-text-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-bio-text {
+    font-size: 12px;
+}
+

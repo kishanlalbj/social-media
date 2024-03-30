@@ -1,0 +1,45 @@
+.search-input {
+    resize: none;
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.search-container {
+    position: relative;
+}
+
+
+.options-container {
+    position: absolute;
+    top: 80%;
+    z-index: 999;
+    background-color: #fff;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    width: 100%;
+
+}
+
+
+.options-list {
+    list-style: none;
+}
+
+.options-list li {
+    cursor: pointer;
+    padding: 12px;
+    
+}
+
+.options-list li:hover {
+    background-color: lightgray;
+}
+
+.option {
+    text-decoration: none;
+    color: inherit;   
+}
+

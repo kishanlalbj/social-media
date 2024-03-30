@@ -1,0 +1,86 @@
+.posts-container {
+    /* flex-grow: 1; */
+    width: 100%;
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.posts-container .card {
+    width: 100%;
+    height: 100%;
+    transition: all .5s;
+}
+
+.post-avatar-section{
+    display: flex;
+    gap: 12px;
+    border-radius: 100%;
+    margin-bottom: 15px;
+}
+
+.post-avatar {
+    width: 36px;
+    border-radius: 100%;
+}
+
+
+.post-actions {
+    margin-top: 24px;
+    display: flex;
+    gap: 24px;
+}
+
+.post-comments-container {
+    margin-top: 20px;
+}
+
+
+.comment-input {
+    padding: 8px ;
+    resize: none;
+    width: 100%;
+    background-color: rgb(231, 231, 231);
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    font-size: 12px;
+    font-family: inherit;
+}
+
+
+.comment-input-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+.comments-container {
+    font-size: 12px;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 8px;
+}
+
+
+.post-reaction-section {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.post-reaction-section > span {
+    font-size: 12px;
+}
+
+.profile-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.profile-link:hover {
+    color: var(--primary-color);
+}
