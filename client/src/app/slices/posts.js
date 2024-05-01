@@ -41,6 +41,17 @@ const posts = createSlice({
         state.newPost.loading = false;
         state.newPost.error = action.payload.message;
       })
+      .addCase(deletePostAsync.fulfilled, (state, action) => {
+        state.loading = false
+        state.posts = state.posts.filter(p => p._id !== action.payload._id)      
+      })
+      .addCase(deletePostAsync.pending, (state) => {
+        state.loading = true;
+      }).addCase(deletePostAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload
+      })
+      
       .addCase(likePostAsync.fulfilled, (state, action) => {
         const index = state.posts.findIndex(
           (post) => post._id === action.payload._id
@@ -58,11 +69,7 @@ export const fetchPostsAsync = createAsyncThunk(
   "posts/fetchPosts",
   async (_, { rejectWithValue }) => {
     try {
-      const resp = await axios.get("/posts", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("tkn")}`,
-        },
-      });
+      const resp = await axios.get("/posts");
       return resp.data;
     } catch (error) {
       console.log(error)
@@ -76,7 +83,6 @@ export const createPostAsync = createAsyncThunk(
   async (post, { rejectWithValue }) => {
     try {
 
-      console.log({post})
       const formData = new FormData();
 
       formData.append('title', post.title)
@@ -87,7 +93,6 @@ export const createPostAsync = createAsyncThunk(
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("tkn")}`,
           },
         }
       );
@@ -99,6 +104,17 @@ export const createPostAsync = createAsyncThunk(
   }
 );
 
+
+export const deletePostAsync = createAsyncThunk("posts/deletePost", async (id, {rejectWithValue}) => {
+  try {
+    const res = await axios.delete(`/posts/${id}`)
+
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data.message)
+  }
+})
+
 export const likePostAsync = createAsyncThunk(
   "posts/likePost",
   async (id, { rejectWithValue }) => {
@@ -106,11 +122,6 @@ export const likePostAsync = createAsyncThunk(
       const resp = await axios.post(
         `/posts/${id}/like`,
         {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("tkn")}`,
-          },
-        }
       );
 
       return resp.data;
@@ -128,11 +139,6 @@ export const commnetPostAsync = createAsyncThunk(
         `/posts/${comment.id}/comment`,
         {
           text: comment.text
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("tkn")}`,
-          },
         }
       );
 

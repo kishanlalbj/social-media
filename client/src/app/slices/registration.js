@@ -9,7 +9,7 @@ export const registerUserAsync = createAsyncThunk(
 
       return resp.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response.data.message);
     }
   }
 );
@@ -22,15 +22,19 @@ const registration = createSlice({
     registration: {},
   },
   reducers: {},
-  extraReducers: builder => {
-    builder.addCase(registerUserAsync.fulfilled, (state) => {
+  extraReducers: (builder) => {
+    builder
+      .addCase(registerUserAsync.fulfilled, (state) => {
         state.loading = false;
-    }).addCase(registerUserAsync.pending, (state) => {
-        state.loading = true
-    }).addCase(registerUserAsync.rejected, (state, action) => {
-        state.error = action.error.message
-    })
-  }
+      })
+      .addCase(registerUserAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(registerUserAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
 });
 
 export default registration.reducer;

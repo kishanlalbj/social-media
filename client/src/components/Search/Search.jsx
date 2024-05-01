@@ -1,18 +1,25 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Search.css";
-import { Link } from "react-router-dom";
 
 const Search = ({ className, options, onSearch }) => {
+  const navigate = useNavigate();
   const [showOptions, setShowOptions] = useState(false);
-  const inputRef = useRef(null);
+  const [q, setQ] = useState("");
 
   const handleChange = (e) => {
+    setQ(e.target.value);
     onSearch(e.target.value);
   };
 
-  const handleClick = (e) => {
-    e.stopPropagation;
+  const handleClick = (id) => {
+    navigate(`/profile/${id}`);
+    setQ("");
     setShowOptions(false);
+  };
+
+  const handleBlur = () => {
+    setQ("");
   };
 
   useEffect(() => {
@@ -23,28 +30,31 @@ const Search = ({ className, options, onSearch }) => {
 
   return (
     <div className={`search-container ${className}`}>
-      <textarea
-        ref={inputRef}
+      <input
+        type="text"
+        value={q}
         onChange={handleChange}
         onFocus={() => setShowOptions(true)}
-        // onBlur={() => setShowOptions(false)}
         className="search-input"
-        rows={1}
         placeholder="Search Users"
-      ></textarea>
+        autoComplete="off"
+        // onBlur={handleBlur}
+      ></input>
 
-      {showOptions && options?.length > 0 && (
+      {q && showOptions && options?.length > 0 && (
         <div className="options-container">
           <ul className="options-list">
             {options.map((opt) => (
-              <Link
+              <li
                 key={opt.id}
-                to={`/profile/${opt.id}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleClick(opt.id);
+                }}
                 className="option"
-                onClick={handleClick}
               >
-                <li>{opt.title}</li>
-              </Link>
+                {opt.title}
+              </li>
             ))}
           </ul>
         </div>

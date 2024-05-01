@@ -5,6 +5,7 @@ import Home from "./pages/Home.jsx";
 import Profile from "./pages/Profile.jsx";
 import MyProfile from "./pages/MyProfile.jsx";
 import ProtectedRoute from "./utils/ProtectedRoute.jsx";
+import Post from "./pages/Post.jsx";
 
 const routes = createBrowserRouter([
   {
@@ -36,6 +37,14 @@ const routes = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <MyProfile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/post/:postId",
+        element: (
+          <ProtectedRoute>
+            <Post />
           </ProtectedRoute>
         ),
       },

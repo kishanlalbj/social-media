@@ -4,6 +4,8 @@ import postsReducer from './slices/posts';
 import profileReducer from './slices/profile';
 import searchReducer from './slices/search';
 import registerReducer from './slices/registration';
+import recommendationReducer from './slices/recommendations';
+import notifications from './slices/notifications';
 
 
 const store = configureStore({
@@ -12,7 +14,9 @@ const store = configureStore({
         posts: postsReducer,
         profile: profileReducer,
         search: searchReducer,
-        register: registerReducer
+        recommendations: recommendationReducer,
+        register: registerReducer,
+        notifications
     }
 })
 

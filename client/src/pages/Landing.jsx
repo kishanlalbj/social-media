@@ -7,7 +7,10 @@ import RegistrationForm from "../components/RegistrationForm/RegistrationForm";
 import { registerUserAsync } from "../app/slices/registration";
 
 const Landing = () => {
-  const isAuth = useSelector((state) => state.auth.isAuthenticated);
+  const { isAuthenticated: isAuth, error: loginError } = useSelector(
+    (state) => state.auth
+  );
+  const { error: registerError } = useSelector((state) => state.register);
   const [showRegistration, setShowRegistration] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -18,8 +21,6 @@ const Landing = () => {
 
   const handleRegistration = (registrationData) => {
     dispatch(registerUserAsync(registrationData));
-
-    console.log({ registrationData });
   };
 
   useEffect(() => {
@@ -35,11 +36,13 @@ const Landing = () => {
         <LoginForm
           onLogin={handleLogin}
           onToggle={() => setShowRegistration(true)}
+          error={loginError}
         />
       ) : (
         <RegistrationForm
           onToggle={() => setShowRegistration(false)}
           onRegistration={handleRegistration}
+          error={registerError}
         />
       )}
     </>

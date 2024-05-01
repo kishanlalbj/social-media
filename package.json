@@ -13,11 +13,17 @@
     "jwt-decode": "^4.0.0",
     "mongoose": "^8.2.3",
     "morgan": "^1.10.0",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "npm-run-all": "^4.1.5",
+    "socket.io": "^4.7.5"
   },
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon app",
-    "start": "cross-env NOCE_ENV=production node app"
+    "start": "cross-env NODE_ENV=production node app",
+    "build:client": "cd client && yarn build",
+    "install:client": "cd client && yarn",
+    "install:server": "yarn",
+    "install:all": "npm-run-all install:client install:server"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"

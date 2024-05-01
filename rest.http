@@ -1,10 +1,40 @@
+### Register
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+    "firstName": "Alex",
+    "lastName": ""
+}
+
+### Login
 POST http://localhost:5000/api/auth/login
 content-type: application/json
 
 {
-    "email": "alex.j@tes.com",
+    "email": "Price63@hotmail.com",
     "password": "test"
 }
+
+
+### Delete POST
+DELETE http://localhost:5000/api/posts/6630ae6cdaf3bffbb30b1762
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MzBhOGJlZGFmM2JmZmJiMzBiMTYwNyIsImZpcnN0TmFtZSI6Illvc2hpa28iLCJsYXN0TmFtZSI6IkpvbmVzIiwiaWF0IjoxNzE0NTU1OTc3LCJleHAiOjE3NDYxMTM1Nzd9.WAEzoDt0o8lxSmZjNixX7cUMF3cAKVQx6evzIe5TZlQ
+
+
+
+###
+GET http://localhost:5000/api/notifications
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MzBhOGJlZGFmM2JmZmJiMzBiMTYwNyIsImZpcnN0TmFtZSI6Illvc2hpa28iLCJsYXN0TmFtZSI6IkpvbmVzIiwiaWF0IjoxNzE0NTU1OTc3LCJleHAiOjE3NDYxMTM1Nzd9.WAEzoDt0o8lxSmZjNixX7cUMF3cAKVQx6evzIe5TZlQ
+
+
+
+
+
 ###
 GET http://localhost:5000/api/auth/current-user
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MDUwYjdiMDUzOGI0NWQ4YmU2NjI4ZiIsImZpcnN0TmFtZSI6IkFsZXgiLCJsYXN0TmFtZSI6IkplbGlzb24iLCJpYXQiOjE3MTE3NzA2NDEsImV4cCI6MTc0MzMyODI0MX0.cD_oD4PFVVSgBb6bg77z0vDEMTZkQgcoJOP3_IYU9O4
+
+
+###
+GET http://localhost:5000/test

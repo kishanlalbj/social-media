@@ -1,10 +1,10 @@
 .post-textarea {
     resize: none;
     width: 100%;
-    padding: 12px;
     font-family: inherit;
-    border: 1px solid rgb(211, 211, 211);
-    background-color: rgb(240, 240, 240);
+    border: transparent;
+    /* border: 1px solid rgb(211, 211, 211); */
+    /* background-color: rgb(240, 240, 240); */
     transition: all 0.5s;
 }
 
@@ -15,7 +15,7 @@
 
 
 .post-textarea:focus {
-    border: 1px solid lightgray;
+    /* border: 1px solid lightgray; */
     outline: none;
 }
 
@@ -26,4 +26,19 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+}
+
+.post-form-wrapper {
+    display: flex;
+    align-items: start;
+    gap: 24px;
+}
+
+.post-form-wrapper div img {
+    border-radius: 100%;
+}
+
+
+.post-form-wrapper form {
+    flex-grow: 1;
 }

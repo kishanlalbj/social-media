@@ -1,4 +1,4 @@
-import { MdPersonOutline } from "react-icons/md";
+import { MdLogout, MdPersonOutline } from "react-icons/md";
 import { Link } from "react-router-dom";
 import "./Header.css";
 
@@ -19,9 +19,12 @@ const Header = ({ isAuthenticated, onLogout }) => {
                 to="/profile/me"
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                <MdPersonOutline className="icon" size="24px" />
+                <MdPersonOutline className="icon" />
               </Link>
-              <button onClick={onLogout}>Sign Out</button>
+
+              <div>
+                <MdLogout className="icon" onClick={onLogout} />
+              </div>
             </div>
           )}
         </div>

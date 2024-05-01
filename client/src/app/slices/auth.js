@@ -36,7 +36,7 @@ const auth = createSlice({
       })
       .addCase(loginAsync.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       .addCase(fetchCurrentUser.fulfilled, (state, action) => {
         state.currentUser.loading = false;
@@ -52,7 +52,7 @@ const auth = createSlice({
       })
       .addCase(followUserAsync.fulfilled, (state, action) => {
         state.loading = false;
-        console.log("follow", action.payload)
+        console.log("follow", action.payload);
         state.currentUser.following = action.payload.following;
       })
       .addCase(followUserAsync.pending, (state) => {
@@ -64,7 +64,7 @@ const auth = createSlice({
       })
       .addCase(unfollowUserAsync.fulfilled, (state, action) => {
         state.loading = false;
-        console.log("unfollow", action.payload)
+        console.log("unfollow", action.payload);
         state.currentUser.following = action.payload.following;
       })
       .addCase(unfollowUserAsync.pending, (state) => {
@@ -73,26 +73,36 @@ const auth = createSlice({
       .addCase(unfollowUserAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
-      }).addCase(editUserAsync.fulfilled, (state, action) => {
-        state.loading = false;
-        state.currentUser = action.payload
-      }).addCase(editUserAsync.pending, (state) => {
-        state.loading = true
-      }).addCase(editUserAsync.rejected, (state, action) => {
-        state.currentUser = false;
-        state.error = action.error.message
       })
+      .addCase(editUserAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentUser = action.payload;
+      })
+      .addCase(editUserAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(editUserAsync.rejected, (state, action) => {
+        state.currentUser = false;
+        state.error = action.payload;
+      });
   },
 });
 
-export const loginAsync = createAsyncThunk("auth/login", async (loginData) => {
-  const resp = await axios.post("/auth/login", {
-    email: loginData.email,
-    password: loginData.password,
-  });
+export const loginAsync = createAsyncThunk(
+  "auth/login",
+  async (loginData, { rejectWithValue }) => {
+    try {
+      const resp = await axios.post("/auth/login", {
+        email: loginData.email,
+        password: loginData.password,
+      });
 
-  return resp.data;
-});
+      return resp.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
 
 export const fetchCurrentUser = createAsyncThunk(
   "auth/fetchCurrentUser",
@@ -149,33 +159,35 @@ export const unfollowUserAsync = createAsyncThunk(
   }
 );
 
-
 export const editUserAsync = createAsyncThunk(
-  "auth/editUser", async (formData, {rejectWithValue}) => {
+  "auth/editUser",
+  async (formData, { rejectWithValue }) => {
     try {
-      console.log({formData})
-      const newFormData = new FormData()
 
-      newFormData.append('firstName', newFormData.firstName)
-      newFormData.append('lastName', newFormData.lastName)
-      newFormData.append('bio', newFormData.bio)
-      newFormData.append('city', newFormData.city)
-      newFormData.append('country', newFormData.country)
-      newFormData.append('avatar', formData.avatar)
-
-      const resp = await axios.put('/users/edit', {...formData}, {
+        console.log({formData})
+    
+        const form = new FormData()
+    
+        form.append('file', formData.file)
+        form.append('firstName', formData.firstName)
+        form.append('lastName', formData.lastName)
+        form.append('bio', formData.bio)
+        form.append('city', formData.city)
+        form.append('country', formData.country)
+      
+  
+      const resp = await axios.put("/users/edit", formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem('tkn')}`
+          "Content-Type": 'multipart/form-data'
         }
-      })
+      });
 
-      return resp.data
+      return resp.data;
     } catch (error) {
-      return rejectWithValue(error)
+      return rejectWithValue(error.response.data.message);
     }
   }
-)
+);
 
 export const { setCurrentUser, logout } = auth.actions;
 

@@ -1,17 +1,22 @@
 const User = require("../models/User");
 const { generateJWT } = require("../utils");
 const verifyJwt = require("../middlewares/verifyJwt");
+const HttpError = require('../utils/HttpError')
 
 const router = require("express").Router();
 
-router.post("/register", async (req, res) => {
+router.post("/register", async (req, res, next) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, city, bio, country } = req.body;
+
+    if(!firstName || !lastName || !email || !password) {
+      throw new HttpError(400, "Neccessary fields are empty")
+    }
 
     const user = await User.findOne({ email }).lean();
 
     if (user) {
-      return res.status(409).json({ message: "email already exists" });
+      throw new HttpError(409, "Email already taken")
     }
 
     const newuser = new User({
@@ -19,6 +24,9 @@ router.post("/register", async (req, res) => {
       lastName,
       email,
       password,
+      city,
+      bio,
+      country
     });
 
     const savedUser = await newuser.save();
@@ -26,7 +34,7 @@ router.post("/register", async (req, res) => {
     res.send(savedUser);
   } catch (error) {
     console.log(error);
-    res.status(500).send("Internal Server Error");
+    next(error)
   }
 });
 
@@ -37,16 +45,16 @@ router.post("/login", async (req, res) => {
     console.log(email, password);
 
     if (!email || !password)
-      return res.status(400).json({ mesasge: "Fields empty" });
+      return res.status(400).json({ message: "Fields empty" });
 
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(401).json({ message: "Username or password incorrect" });
 
     const isValid = await user.isValidPassword(password);
 
     if (!isValid) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({ message: "Username or password incorrect" });
     }
 
     const token = await generateJWT({
@@ -67,8 +75,8 @@ router.get("/current-user", verifyJwt, async (req, res) => {
     const user = req.user;
 
     const currentUser = await User.findById(req.user.id)
-      .populate("followers", "firstName lastName")
-      .populate("following", "firstName lastName")
+      .populate("followers", "firstName lastName avatar")
+      .populate("following", "firstName lastName avatar")
       .select({ password: 0 });
 
     if (!user) return res.status(404).json({ message: "User not found" });

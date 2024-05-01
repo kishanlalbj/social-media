@@ -1,0 +1,20 @@
+.recommendation-card {
+  padding: 16px;
+
+  background: #fff;
+  border-radius: 10px;
+}
+
+.recommendation-list {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.recommendation-list-item {
+    cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

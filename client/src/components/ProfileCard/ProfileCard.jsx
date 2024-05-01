@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import "./ProfileCard.css";
 import { MdEmail, MdLocationCity } from "react-icons/md";
+import dummyAvatar from "../../assets/avatar.svg";
 
 const ProfileCard = ({
   id,
@@ -10,6 +11,7 @@ const ProfileCard = ({
   followers,
   following,
   isOwn,
+  email,
   city,
   country,
   bio,
@@ -17,12 +19,11 @@ const ProfileCard = ({
   onUnFollow,
   onFollow,
 }) => {
-  console.log("---", { avatar }, import.meta.env.VITE_IMAGES_SERVER_URL);
   return (
     <div className="card profile-card-wrapper">
       <div className="profile-avatar-section">
         <img
-          src={import.meta.env.VITE_IMAGES_SERVER_URL + avatar}
+          src={avatar ? avatar : dummyAvatar}
           alt="avatar"
           style={{ objectFit: "contain" }}
           className="profile-avatar"
@@ -65,15 +66,15 @@ const ProfileCard = ({
       <br />
       <div className="profile-others">
         <div className="profile-bio-text-container">
-          <MdLocationCity className="icon-active" size={"18px"} />
+          <MdLocationCity className="icon-active" size={"24px"} />
           <span className="profile-bio-text">
             {city}, {country}
           </span>
         </div>
 
         <div className="profile-bio-text-container">
-          <MdEmail className="icon-active" size={"18px"} />
-          <span className="profile-bio-text">{country}</span>
+          <MdEmail className="icon-active" size={"24px"} />
+          <span className="profile-bio-text">{email}</span>
         </div>
       </div>
     </div>

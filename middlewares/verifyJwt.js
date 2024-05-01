@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+const HttpError = require("../utils/HttpError");
 
-const verifyJwt = (req, res, next) => {
+const verifyJwt = async (req, res, next) => {
   try {
     const authHeader = req.headers["authorization"];
 
@@ -8,7 +10,7 @@ const verifyJwt = (req, res, next) => {
 
     const token = authHeader.split(" ")[1];
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
+    jwt.verify(token, process.env.JWT_SECRET, async (err, payload) => {
       if (err) {
         if (err.name === "JsonWebTokenError")
           return res.status(401).json({ message: "Unauthorized" });
@@ -16,7 +18,12 @@ const verifyJwt = (req, res, next) => {
         return res.status(401).json({ message: err.message });
       }
 
-      req.user = payload;
+      const user  = await User.findById(payload.id).lean()
+
+
+      if(!user) return res.status(401).json({message: 'Unauthorized'})
+
+      req.user = payload
       next();
     });
   } catch (error) {

@@ -18,6 +18,7 @@
     gap: 12px;
     border-radius: 100%;
     margin-bottom: 15px;
+    justify-content: space-between;
 }
 
 .post-avatar {
@@ -83,4 +84,9 @@
 
 .profile-link:hover {
     color: var(--primary-color);
+}
+
+
+.post-image-container {
+    /* width: 50%; */
 }

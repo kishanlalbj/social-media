@@ -1,8 +1,8 @@
-const { Schema } = require("mongoose");
 const verifyJwt = require("../middlewares/verifyJwt");
 const Post = require("../models/Post");
 const User = require("../models/User");
-const upload = require('../utils/upload')
+const upload = require("../utils/upload");
+const HttpError = require("../utils/HttpError");
 const router = require("express").Router();
 
 router.post("/follow/:userId", verifyJwt, async (req, res) => {
@@ -10,14 +10,10 @@ router.post("/follow/:userId", verifyJwt, async (req, res) => {
     const { userId } = req.params;
     const user = req.user;
 
-    console.log(userId);
     if (req.user.id === userId)
-      return res.status(409).json({ message: "You cannot follow yourself" });
+      throw new HttpError(409, "You cannot follow yourself");
 
     const { following } = await User.findById(user.id).lean();
-
-    // console.log(JSON.stringify(following, undefined, 2), typeof userId)
-    // console.log(String(following.includes(userId)));
 
     let alreadyFollowed = false;
     following.forEach((follower) => {
@@ -26,11 +22,10 @@ router.post("/follow/:userId", verifyJwt, async (req, res) => {
       }
     });
 
-    if (alreadyFollowed)
-      return res.status(409).json({ message: "Already followed" });
+    if (alreadyFollowed) throw new HttpError(409, "Already Followed");
 
     if (Array.isArray(following) && following.includes(userId)) {
-      return res.status(409).json({ message: "You already follow thi person" });
+      throw new HttpError(409, "Already Follow this person");
     }
 
     const updatedFollower = await User.findByIdAndUpdate(userId, {
@@ -47,7 +42,7 @@ router.post("/follow/:userId", verifyJwt, async (req, res) => {
     res.json(updatedFollowing);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    next(error);
   }
 });
 
@@ -59,6 +54,7 @@ router.post("/unfollow/:userId", verifyJwt, async (req, res) => {
     await User.findByIdAndUpdate(userId, {
       $pull: { followers: user.id },
     });
+
     const updatedFollowing = await User.findByIdAndUpdate(
       user.id,
       {
@@ -70,7 +66,26 @@ router.post("/unfollow/:userId", verifyJwt, async (req, res) => {
     res.json(updatedFollowing);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    next(error);
+  }
+});
+
+router.get("/recommendation", verifyJwt, async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id)
+      .select({ following: 1 })
+      .lean();
+
+    if (!user) throw new HttpError(404, "User not found");
+
+    const profiles = await User.find({
+      $and: [{ _id: { $ne: req.user.id } }, { _id: { $nin: user.following } }],
+    })
+      .select({ firstName: 1, lastName: 1 })
+      .lean();
+    res.send(profiles.slice(0, 4));
+  } catch (error) {
+    next(error);
   }
 });
 
@@ -78,6 +93,8 @@ router.get("/:userId", verifyJwt, async (req, res) => {
   try {
     const { userId } = req.params;
     const user = await User.findById(userId).select({ password: 0 }).lean();
+
+    if (!user) throw new HttpError(404, "User not found");
 
     const posts = await Post.find({ postedBy: userId })
       .populate("postedBy")
@@ -90,15 +107,15 @@ router.get("/:userId", verifyJwt, async (req, res) => {
       posts,
     });
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
+    next(error);
   }
 });
 
-router.post("/search", async (req, res) => {
+router.post("/search", async (req, res, next) => {
   try {
     const { q } = req.query;
 
-    if (!q) return res.status(400).json({ message: "Query empty" });
+    if (!q) throw new HttpError(400, "Query q is missing");
 
     const profiles = await User.find({
       $or: [
@@ -120,43 +137,52 @@ router.post("/search", async (req, res) => {
 
     res.send(result);
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    next(error);
   }
 });
 
-router.put("/edit", verifyJwt, upload.single('avatar'), async (req, res, next) => {
-  try {
-    const user = req.user;
-    const file = req.file.filename
+router.put(
+  "/edit",
+  verifyJwt,
+  upload.single("file"),
+  async (req, res, next) => {
+    try {
+      const user = req.user;
+      const file = req.file;
 
-    console.log("--------", req.file.filename)
-    const { firstName, lastName, bio, city, country } = req.body;
+      console.log(req.file);
 
-    if ((!firstName, !lastName, !bio, !city, !country))
-      return res.status(400).json({ message: "All fields required" });
+      const { firstName, lastName, bio, city, country } = req.body;
 
+      if (!firstName || !lastName || !bio || !city || !country)
+        throw new HttpError(400, "All fields are required");
 
-    const newObj = { ...req.body, avatar: file }
+      const newObj = {
+        ...req.body
+      };
 
-    const profile = await User.findByIdAndUpdate(
-      user.id,
-      {
-        $set: {
-          ...newObj
+      if(file) {
+        newObj.avatar = `${req.protocol}://${req.get("host")}/images/${file.filename}`
+      }
+
+      const profile = await User.findByIdAndUpdate(
+        user.id,
+        {
+          $set: {
+            ...newObj,
+          },
         },
-      },
-      { new: 1 }
-    )
-      .populate("followers", "-password -following -followers")
-      .populate("following", "-password -following -followers")
-      .select({ password: 0 });
+        { new: 1 }
+      )
+        .populate("followers", "-password -following -followers")
+        .populate("following", "-password -following -followers")
+        .select({ password: 0 });
 
-    res.send(profile);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal Server Error" });
+      res.send(profile);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 module.exports = router;

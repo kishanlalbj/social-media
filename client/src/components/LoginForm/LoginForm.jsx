@@ -1,7 +1,8 @@
 import { useState } from "react";
 import "./LoginForm.css";
+import Error from "../UI/Error/Error";
 
-const LoginForm = ({ onLogin, onToggle }) => {
+const LoginForm = ({ onLogin, onToggle, error }) => {
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: "",
@@ -17,13 +18,13 @@ const LoginForm = ({ onLogin, onToggle }) => {
     onLogin(loginForm);
   };
 
-  const validateForm = () => {
-    const fields = Object.keys(loginForm).map((key) => {
-      if (!loginForm[key]) return key;
-    });
+  // const validateForm = () => {
+  //   const fields = Object.keys(loginForm).map((key) => {
+  //     if (!loginForm[key]) return key;
+  //   });
 
-    return fields.length > 0;
-  };
+  //   return fields.length > 0;
+  // };
 
   return (
     <div className="card">
@@ -62,6 +63,7 @@ const LoginForm = ({ onLogin, onToggle }) => {
             Sign Up
           </button>
         </center>
+        <Error error={error} />
       </form>
     </div>
   );

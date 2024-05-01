@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
-const connString = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CONN_STRING}`
+const connString = process.env.MONGO_CONN_STRING
 
 
 mongoose.connect(connString).then(() => {
     console.log("Database connected")
 }).catch((err) => {
-    console.error(err)
+    // console.error(err)
 })
 
 

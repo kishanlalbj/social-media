@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import dummyAvatar from "../../assets/avatar.svg";
 import "./UsersList.css";
 
 const UsersList = ({ title, users, btnText, onClick }) => {
@@ -16,7 +17,7 @@ const UsersList = ({ title, users, btnText, onClick }) => {
                 className="profile-link profile-link-container"
               >
                 <img
-                  src="https://i.pravatar.cc/300"
+                  src={u.avatar ? u.avatar : dummyAvatar}
                   alt="avatar"
                   className="profile-list-avatar"
                 ></img>

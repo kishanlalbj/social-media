@@ -1,9 +1,14 @@
+import Error from "../UI/Error/Error";
+import dummyAvatar from "../../assets/avatar.svg";
+
 const ProfileEditForm = ({
   previewAvatar,
   formData,
   onChange,
   onSave,
   onAvatarChange,
+  onClose,
+  error,
 }) => {
   return (
     <>
@@ -12,17 +17,20 @@ const ProfileEditForm = ({
           <div>
             <center>
               <label htmlFor="avatar">
-                <img
-                  src={
-                    previewAvatar
-                      ? previewAvatar
-                      : import.meta.env.VITE_IMAGES_SERVER_URL +
-                        formData?.avatar
-                  }
-                  alt="avatar"
-                  className="my-profile-avatar"
-                  style={{ cursor: "pointer" }}
-                ></img>
+                {!formData.avatar && !previewAvatar ? (
+                  <img
+                    src={dummyAvatar}
+                    alt="avatar"
+                    className="my-profile-avatar"
+                  ></img>
+                ) : (
+                  <img
+                    src={previewAvatar ? previewAvatar : formData?.avatar}
+                    alt="avatar"
+                    className="my-profile-avatar"
+                    style={{ cursor: "pointer" }}
+                  ></img>
+                )}
               </label>
               <input
                 type="file"
@@ -92,9 +100,16 @@ const ProfileEditForm = ({
             ></input>
           </div>
           <br />
+
           <center>
             <button onClick={onSave}>Save</button>
+            &nbsp; &nbsp; &nbsp;
+            <button className="btn-outline" onClick={onClose}>
+              Close
+            </button>
           </center>
+
+          <Error error={error} />
         </form>
       </div>
     </>

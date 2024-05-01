@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { MdDelete, MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { editUserAsync, unfollowUserAsync } from "../app/slices/auth";
 import ProfileEditForm from "../components/ProfileEditForm/ProfileEditForm";
 import UsersList from "../components/UsersList/UsersList";
+import ProfileCover from "../components/ProfileCover/ProfileCover";
 
 const MyProfile = () => {
-  const { currentUser } = useSelector((state) => state.auth);
+  const { currentUser, loading, error } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const [editMode, setEditMode] = useState(false);
@@ -19,9 +20,9 @@ const MyProfile = () => {
   const handleSave = (e) => {
     e.preventDefault();
 
-    dispatch(editUserAsync({ ...formData, avatar: file ? file : null }));
-
-    setEditMode(false);
+    dispatch(editUserAsync({ ...formData, file })).then((res) => {
+      if (res.meta.requestStatus === "fulfilled") setEditMode(false);
+    });
   };
 
   const handleChange = (e) => {
@@ -38,40 +39,22 @@ const MyProfile = () => {
     dispatch(unfollowUserAsync(id));
   };
 
+  const toggleEditMode = () => {
+    setEditMode((prev) => !prev);
+  };
+
   return (
     <div>
       <div className="my-profile-container">
-        <div className="card">
-          <div className="my-profile-section">
-            <img
-              src={import.meta.env.VITE_IMAGES_SERVER_URL + currentUser?.avatar}
-              alt="avatar"
-              className="my-profile-avatar"
-            />
-
-            <div className="my-profile-details-container">
-              <div>
-                <div>
-                  <p className="my-profile-name">
-                    {currentUser.firstName} {currentUser.lastName}
-                    &nbsp; &nbsp;
-                    <span>
-                      <MdEdit
-                        className="icon icon-active"
-                        size="18px"
-                        onClick={() => setEditMode(true)}
-                      />
-                    </span>
-                  </p>
-                </div>
-              </div>
-              <p className="my-profile-bio">{currentUser.bio}</p>
-              <p className="my-profile-location">
-                {currentUser.city}, {currentUser.country}
-              </p>
-            </div>
-          </div>
-        </div>
+        <ProfileCover
+          avatar={currentUser.avatar}
+          firstName={currentUser.firstName}
+          lastName={currentUser.lastName}
+          email={currentUser.email}
+          followers={currentUser.followers}
+          isOwn={true}
+          onEdit={toggleEditMode}
+        ></ProfileCover>
 
         <div className="profile-other-sections">
           <UsersList
@@ -90,10 +73,7 @@ const MyProfile = () => {
       </div>
 
       {editMode && (
-        <div
-          className="edit-form-container"
-          onClick={() => setEditMode((prev) => !prev)}
-        >
+        <div className="edit-form-container">
           <div className="container">
             <ProfileEditForm
               previewAvatar={previewFile}
@@ -101,6 +81,8 @@ const MyProfile = () => {
               onChange={handleChange}
               formData={formData}
               onSave={handleSave}
+              error={error}
+              onClose={() => setEditMode(false)}
             ></ProfileEditForm>
           </div>
         </div>

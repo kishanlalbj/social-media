@@ -6,11 +6,7 @@ export const fetchProfileById = createAsyncThunk(
   "profile/fetchProfile",
   async (id, { rejectWithValue }) => {
     try {
-      const resp = await axios.get(`/users/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("tkn")}`,
-        },
-      });
+      const resp = await axios.get(`/users/${id}`);
 
       return resp.data;
     } catch (error) {
@@ -25,12 +21,7 @@ export const likePostAsync = createAsyncThunk(
     try {
       const resp = await axios.post(
         `/posts/${id}/like`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("tkn")}`,
-          },
-        }
+        {}
       );
 
       return resp.data;
@@ -48,11 +39,6 @@ export const commentPostAsync = createAsyncThunk(
         `/posts/${comment.id}/comment`,
         {
           text: comment.text,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("tkn")}`,
-          },
         }
       );
 

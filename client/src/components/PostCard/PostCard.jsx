@@ -3,11 +3,13 @@ import {
   MdOutlineThumbUp,
   MdOutlineComment,
   MdSend,
+  MdDelete,
 } from "react-icons/md";
 import moment from "moment";
 import "./PostCard.css";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import dummyAvatar from "../../assets/avatar.svg";
 
 const PostCard = ({
   id,
@@ -20,6 +22,8 @@ const PostCard = ({
   comments,
   onLike,
   onComment,
+  onDelete,
+  isOwn,
 }) => {
   const [comment, setComment] = useState("");
   const [showComment, setShowComment] = useState(false);
@@ -41,33 +45,40 @@ const PostCard = ({
   return (
     <div className="card">
       <div className="post-avatar-section">
-        <div>
-          <img
-            src={
-              author.avatar
-                ? import.meta.env.VITE_IMAGES_SERVER_URL + author?.avatar
-                : "https://i.pravatar.cc/300"
-            }
-            className="post-avatar"
-          ></img>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+          }}
+        >
+          <div>
+            <img
+              src={author.avatar ? author?.avatar : dummyAvatar}
+              className="post-avatar"
+            ></img>
+          </div>
+          <div>
+            <Link to={`/profile/${author._id}`} className="profile-link">
+              {author?.firstName} {author?.lastName}
+            </Link>
+            <p className="date-text">{moment(createdAt).format("ll")}</p>
+          </div>
         </div>
+
         <div>
-          <Link to={`/profile/${author._id}`} className="profile-link">
-            {author?.firstName} {author?.lastName}
-          </Link>
-          <p className="date-text">{moment(createdAt).format("ll")}</p>
+          {isOwn && (
+            <MdDelete style={{ color: "red" }} onClick={() => onDelete(id)} />
+          )}
         </div>
       </div>
 
       <p>{title}</p>
       <br />
-      {image && (
-        <img
-          src={import.meta.env.VITE_IMAGES_SERVER_URL + image}
-          alt={image}
-          width={"100%"}
-        ></img>
-      )}
+
+      <div className="post-image-container">
+        {image && <img src={image} alt={image} width={"100%"}></img>}
+      </div>
 
       <br />
 
@@ -126,8 +137,7 @@ const PostCard = ({
                   <img
                     src={
                       com.user?.avatar
-                        ? import.meta.env.VITE_IMAGES_SERVER_URL +
-                          com?.user?.avatar
+                        ? com?.user?.avatar
                         : "https://i.pravatar.cc/300"
                     }
                     alt="avatar"

@@ -50,3 +50,11 @@
     font-size: 12px;
 }
 
+
+.profile-others {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+}
+

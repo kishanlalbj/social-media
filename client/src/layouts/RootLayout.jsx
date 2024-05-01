@@ -5,6 +5,8 @@ import Header from "../components/Header/Header";
 import AuthContext from "../contexts/AuthContext";
 import { fetchCurrentUser, logout } from "../app/slices/auth";
 import { useEffect } from "react";
+// import Messanger from "../components/Messenger/Messanger";
+import { fetchNotificationsAsync } from "../app/slices/notifications";
 
 const RootLayout = () => {
   const { isAuthenticated, currentUser } = useSelector((state) => state.auth);
@@ -18,31 +20,25 @@ const RootLayout = () => {
 
   useEffect(() => {
     if (localStorage.getItem("tkn")) {
-      dispatch(fetchCurrentUser());
+      dispatch(fetchCurrentUser()).unwrap();
+      dispatch(fetchNotificationsAsync());
       navigate("/home");
     } else {
       navigate("/");
     }
   }, [isAuthenticated, dispatch, navigate]);
 
-  // useEffect(() => {
-  //   if (token) {
-  //     // dispatch(fetchCurrentUser());
-  //     navigate("/home");
-  //   }
-  // }, [dispatch, token, navigate, isAuthenticated]);
-
   return (
     <>
       <Header isAuthenticated={isAuthenticated} onLogout={handleLogout} />
 
-      <AuthContext.Provider value={{ ...currentUser }}>
-        <div className="container">
-          <section>
+      <section>
+        <AuthContext.Provider value={{ ...currentUser }}>
+          <section className="container">
             <Outlet />
           </section>
-        </div>
-      </AuthContext.Provider>
+        </AuthContext.Provider>
+      </section>
     </>
   );
 };

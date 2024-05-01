@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import "./RegistrationForm.css";
+import Error from "../UI/Error/Error";
 
-const RegistrationForm = ({ onRegistration, onToggle }) => {
+const RegistrationForm = ({ onRegistration, onToggle, error }) => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -110,6 +111,8 @@ const RegistrationForm = ({ onRegistration, onToggle }) => {
             Login
           </button>
         </center>
+
+        <Error error={error} />
       </form>
     </div>
   );
